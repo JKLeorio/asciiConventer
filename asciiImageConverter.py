@@ -13,6 +13,7 @@ gscale1 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'
  
 
 gscale2 = '@%#*+=-:. '
+# gscale2 =  "@#S%?*+;:, "
  
 def getAverageL(image):
  
@@ -67,15 +68,18 @@ def convertImageToAscii(image, w, scale , moreLevels):
  
             if i == cols-1:
                 x2 = W
- 
+
+            lg1 = len(gscale1)-1
+            lg2 = len(gscale2)-1
+
             img = image.crop((x1, y1, x2, y2))
  
             avg = int(getAverageL(img))
  
             if moreLevels:
-                gsval = gscale1[int((avg*69)/255)]
+                gsval = gscale1[int((avg*lg1)/255)]
             else:
-                gsval = gscale2[int((avg*9)/255)]
+                gsval = gscale2[int((avg*lg2)/255)]
  
             aimg[j] += gsval
      

@@ -9,10 +9,6 @@ import cv2
 from pathlib import Path
 
 
-def audioPlayer(filename):
-    pass
-
-
 def asciiVideoPlayer(dirname, fps = 30):
     dpath = Path(dirname)
     if dpath.exists():
@@ -36,42 +32,64 @@ def asciiVideoPlayer(dirname, fps = 30):
             time.sleep(0.5)
 
         subprocess.Popen(('python PlayAudio.py --file files/"NicoNico Douga - Bad Apple.wav"'), shell = True, stdout = subprocess.PIPE)
+        
+        # timing = (1/fps) * 0.903
+        timing = (1/fps) * 0.6
 
-
-        timing = (1/fps) * 0.903
         window_name = "bad apple"
 
         cv2.namedWindow(window_name)
         cv2.moveWindow(window_name, 960, 50)
 
+        t1 = 0
+        t2 = 0
+        fpsi = None
+
+        ProgramTime = time.time()
 
         for file in tdir:
-
             timer = time.time()
 
+            t1 = time.time()
+
             with file.open() as tfile:
+
                 data = tfile.read()
                 ret, frame = vfile.read()
                 imW, imH, b = frame.shape
                 imdim = (int(imH/3), int(imW/3))
                 res_frame = cv2.resize(frame, imdim)
-                # time.sleep(0.027)
+
+                fpsi = str(int(1/(t1-t2)))
+
+                t2 = t1
+
+                cv2.putText(res_frame, fpsi , (7, 70) , cv2.FONT_HERSHEY_SIMPLEX, 3, (100, 255, 0), 3, cv2.LINE_AA)
+
                 cv2.imshow(window_name, res_frame)
                 sys.stdout.write(data)
                 if cv2.waitKey(1) == ord("q"):
                     break
-                # os.system("cls")
-
-            while time.time() - timer < timing:
-                pass
-
 
             # t = time.time() - timer
             # if t < timing:
             #     time.sleep(timing - t)
             # timer = time.time()
+
+
+                # os.system("cls")
+                # time.sleep(0.024)
+
+            while time.time() - timer < timing:
+                pass
+
+        print(f"Time - {time.time()-ProgramTime}")
+
     else:
         print("this dir is not exists")
+    vfile.release()
+    cv2.destroyAllWindows()
+
 
 def main():
     asciiVideoPlayer("badappleascii")
