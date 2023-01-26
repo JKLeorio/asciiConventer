@@ -22,7 +22,7 @@ def convertVideoToAscii(filename, dirname):
 			break
 		img = cv2.cvtColor(frame , cv2.COLOR_BGR2RGB)
 		pimg = Image.fromarray(img)
-		aimg = "\n".join(convertImageToAscii(pimg, w = 6, scale = 2.22, moreLevels = False))
+		aimg = "\n".join(convertImageToAscii(pimg, w = 4, scale = 2.22, moreLevels = False))
 		with open(f"{dirname}\\{frame_id}.txt", "w") as file:
 			file.write(aimg+"\n")
 		frame_id+=1
@@ -31,7 +31,13 @@ def convertVideoToAscii(filename, dirname):
 
 
 def main():
-	convertVideoToAscii("files/NicoNico Douga - Bad Apple.mp4", "badappleascii")
+	parser = argparse.ArgumentParser(description = "Program for Converting video")
+	parser.add_argument("--file", dest = "filename", required = True)
+	parser.add_argument("--dir", dest = "dirname", required = True)
+	arguments = parser.parse_args()
+	filename = arguments.filename
+	dirname = arguments.dirname
+	convertVideoToAscii(filename, dirname)
 
 
 if __name__ == '__main__':

@@ -3,13 +3,14 @@ import os
 import time
 import timeit
 import subprocess
+import argparse
 
 import cv2
 
 from pathlib import Path
 
 
-def asciiVideoPlayer(dirname, fps = 30):
+def asciiVideoPlayer(dirname, filename, audiofile, fps = 30):
     dpath = Path(dirname)
     if dpath.exists():
         tdir = sorted([file for file in dpath.iterdir()], key = lambda f : int(f.stem))
@@ -23,67 +24,72 @@ def asciiVideoPlayer(dirname, fps = 30):
 
 
 
-        vfile = cv2.VideoCapture("files\\NicoNico Douga - Bad Apple.mp4")
+        vfile = cv2.VideoCapture(filename)
 
-
+        audiofilename = str(audiofile.parent) + "/" + '"'+ audiofile.name + '"' if len(str(audiofile).split()) > 1 else str(audiofile.parent) + "/" + audiofile.name
+        
         os.system("cls")
         for i in range(1,4):
             print(f"{i}...")
             time.sleep(0.5)
 
-        subprocess.Popen(('python PlayAudio.py --file files/"NicoNico Douga - Bad Apple.wav"'), shell = True, stdout = subprocess.PIPE)
+
+        subprocess.Popen((f'python PlayAudio.py --file {audiofilename}'), shell = True, stdout = subprocess.PIPE)
         
+        time.sleep(0.22)
+
+        timing = (1/fps)
+
         # timing = (1/fps) * 0.903
-        timing = (1/fps) * 0.6
+        # timing = (1/fps) * 0.73
 
         window_name = "bad apple"
 
         cv2.namedWindow(window_name)
-        cv2.moveWindow(window_name, 960, 50)
+        cv2.moveWindow(window_name, 900, 50)
 
         t1 = 0
         t2 = 0
         fpsi = None
 
-        ProgramTime = time.time()
+        ProgramTime = time.perf_counter()
 
         for file in tdir:
-            timer = time.time()
+            timer = time.perf_counter()
 
-            t1 = time.time()
+            t1 = time.perf_counter()
 
             with file.open() as tfile:
 
                 data = tfile.read()
+                
                 ret, frame = vfile.read()
-                imW, imH, b = frame.shape
-                imdim = (int(imH/3), int(imW/3))
-                res_frame = cv2.resize(frame, imdim)
-
-                fpsi = str(int(1/(t1-t2)))
+                
+                fpsi = str(round(1/(t1-t2)))
 
                 t2 = t1
 
-                cv2.putText(res_frame, fpsi , (7, 70) , cv2.FONT_HERSHEY_SIMPLEX, 3, (100, 255, 0), 3, cv2.LINE_AA)
+                cv2.putText(frame, fpsi , (7, 70) , cv2.FONT_HERSHEY_SIMPLEX, 2, (100, 255, 0), 3, cv2.LINE_AA)
 
-                cv2.imshow(window_name, res_frame)
+                cv2.imshow(window_name, frame)
+
                 sys.stdout.write(data)
                 if cv2.waitKey(1) == ord("q"):
                     break
 
-            # t = time.time() - timer
+            # t = time.perf_counter() - timer
             # if t < timing:
             #     time.sleep(timing - t)
-            # timer = time.time()
+            # timer = time.perf_counter()
 
 
                 # os.system("cls")
                 # time.sleep(0.024)
 
-            while time.time() - timer < timing:
+            while time.perf_counter() - timer < timing:
                 pass
 
-        print(f"Time - {time.time()-ProgramTime}")
+        print(f"Time - {time.perf_counter()-ProgramTime}")
 
     else:
         print("this dir is not exists")
@@ -92,7 +98,15 @@ def asciiVideoPlayer(dirname, fps = 30):
 
 
 def main():
-    asciiVideoPlayer("badappleascii")
+    parser = argparse.ArgumentParser(description = "Program for Playing video")
+    parser.add_argument("--dir", dest = "dirname", required = True)
+    parser.add_argument("--vfile", dest = "videofilename", required = True)
+    parser.add_argument("--afile", dest = "audiofilename", required = True, type = Path)
+    arguments = parser.parse_args()
+    dirname = arguments.dirname
+    filename = arguments.videofilename
+    audiofile = arguments.audiofilename
+    asciiVideoPlayer(dirname, filename, audiofile)
 
 if __name__ == '__main__':
     main()
