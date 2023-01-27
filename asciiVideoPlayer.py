@@ -89,6 +89,7 @@ def asciiVideoPlayer(dirname, filename, audiofile, fps = 30):
                 cv2.imshow(window_name, frame)
 
                 sys.stdout.write(data)
+                
                 if cv2.waitKey(1) == ord("q"):
                     break
 
