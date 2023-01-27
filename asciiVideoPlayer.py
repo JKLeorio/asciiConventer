@@ -12,6 +12,7 @@ from pathlib import Path
 
 def asciiVideoPlayer(dirname, filename, audiofile, fps = 30):
     dpath = Path(dirname)
+
     if dpath.exists():
         tdir = sorted([file for file in dpath.iterdir()], key = lambda f : int(f.stem))
         frame = tdir[0]
@@ -40,36 +41,50 @@ def asciiVideoPlayer(dirname, filename, audiofile, fps = 30):
 
         timing = (1/fps)
 
-        # timing = (1/fps) * 0.903
-        # timing = (1/fps) * 0.73
 
         window_name = "bad apple"
 
         cv2.namedWindow(window_name)
         cv2.moveWindow(window_name, 900, 50)
 
-        t1 = 0
+        t1 = time.perf_counter()
         t2 = 0
-        fpsi = None
+        fpsi = str(fps)
 
         ProgramTime = time.perf_counter()
 
-        for file in tdir:
-            timer = time.perf_counter()
+        timer = 1
 
-            t1 = time.perf_counter()
+
+
+        for file in tdir:
+
 
             with file.open() as tfile:
 
                 data = tfile.read()
                 
                 ret, frame = vfile.read()
-                
-                fpsi = str(round(1/(t1-t2)))
 
-                t2 = t1
+                # imH, imW, b = frame.shape
+
+                # imdim = (int(imW/3), int(imH/3))
+
+                # res_frame = cv2.resize(frame, imdim)
 
                 cv2.putText(frame, fpsi , (7, 70) , cv2.FONT_HERSHEY_SIMPLEX, 2, (100, 255, 0), 3, cv2.LINE_AA)
+
+                while time.perf_counter() - timer < timing:
+                    pass
+
+                t1 = time.perf_counter()
+
+                fpsi = str(round(1/(t1-t2)))
+                t2 = t1
+
+
+                timer = time.perf_counter()
+
 
                 cv2.imshow(window_name, frame)
 
@@ -77,17 +92,6 @@ def asciiVideoPlayer(dirname, filename, audiofile, fps = 30):
                 if cv2.waitKey(1) == ord("q"):
                     break
 
-            # t = time.perf_counter() - timer
-            # if t < timing:
-            #     time.sleep(timing - t)
-            # timer = time.perf_counter()
-
-
-                # os.system("cls")
-                # time.sleep(0.024)
-
-            while time.perf_counter() - timer < timing:
-                pass
 
         print(f"Time - {time.perf_counter()-ProgramTime}")
 

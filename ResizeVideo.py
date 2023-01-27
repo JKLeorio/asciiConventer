@@ -19,6 +19,8 @@ def resizeVideo(Videofilename, output):
 
 	ffmpeg_resize(Videofilename, output, imdim)
 
+	vfile.release()
+
 if __name__ == '__main__':
 
 	descStr = "This program resize an video into new video"
