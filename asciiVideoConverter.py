@@ -6,28 +6,36 @@ import argparse
 
 from PIL import Image
 from asciiImageConverter import convertImageToAscii
-
+from progress.bar import IncrementalBar
 
 def convertVideoToAscii(filename, dirname):
 	video = cv2.VideoCapture(filename)
 	if not Path(f"{dirname}/").exists():
 		os.mkdir(dirname)
 
+	frames_count = video.get(cv2.CAP_PROP_FRAME_COUNT)
+
+	bar = IncrementalBar("Progress" , max = frames_count)
+
 	frame_id = 1
+
 	while video.isOpened():
 
+		bar.next()
+
 		ret , frame = video.read()
-		print(frame_id)
+
 		if not ret:
 			break
 		img = cv2.cvtColor(frame , cv2.COLOR_BGR2RGB)
 		pimg = Image.fromarray(img)
-		aimg = "\n".join(convertImageToAscii(pimg, w = 4, scale = 2.22, moreLevels = False))
+		aimg = "\n".join(convertImageToAscii(pimg, w = 24, scale = 2.22, moreLevels = False))
 		with open(f"{dirname}\\{frame_id}.txt", "w") as file:
 			file.write(aimg+"\n")
 		frame_id+=1
 
 	video.release()
+	bar.finish()
 
 
 def main():
