@@ -29,7 +29,7 @@ def convertVideoToAscii(filename, dirname):
 			break
 		img = cv2.cvtColor(frame , cv2.COLOR_BGR2RGB)
 		pimg = Image.fromarray(img)
-		aimg = "\n".join(convertImageToAscii(pimg, w = 24, scale = 2.22, moreLevels = False))
+		aimg = "\n".join(convertImageToAscii(pimg, w = 11, scale = 2.22, moreLevels = False))
 		with open(f"{dirname}\\{frame_id}.txt", "w") as file:
 			file.write(aimg+"\n")
 		frame_id+=1

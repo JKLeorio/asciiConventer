@@ -1,11 +1,11 @@
 import os
 import sys
-from moviepy.editor import VideoFileClip
+from moviepy import VideoFileClip
 from pathlib import Path
 import argparse
 
 
-def Separate_audio_from_video(Videofilename, dirname , outfile_type = "mp3"):
+def Separate_audio_from_video(Videofilename, dirname , outfile_type = "wav"):
 	path = Path(Videofilename)
 	filename, pref = os.path.splitext(path.name)
 
@@ -21,6 +21,7 @@ if __name__=="__main__":
 	arguments = parser.parse_args()
 	videoFile = arguments.videoFile
 	dirname = arguments.dirnameForOut
+	filetype = "wav"
 	if arguments.filetype is not None:
 		filetype = arguments.filetype
 
